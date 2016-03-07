@@ -13,4 +13,9 @@ class Oystercard
     fail MAX_BALANCE_ERROR if (balance + amount) > MAX_BALANCE
     @balance += amount
   end
+
+  def deduct amount
+    @balance -= amount
+  end
+  
 end

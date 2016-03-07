@@ -20,7 +20,13 @@ describe Oystercard do
       oystercard.top_up Oystercard::MAX_BALANCE
       expect{ oystercard.top_up 1 }.to raise_error error
     end
+  end
 
+  describe '#deduct' do
+    it 'reduces balance by argument' do
+      oystercard.top_up 25
+      expect{ oystercard.deduct 5}.to change{ oystercard.balance }.by (-5)
+    end
   end
 
 end
