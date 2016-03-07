@@ -17,7 +17,8 @@ describe Oystercard do
 
     it 'has a maximum balance of £90' do
       error = Oystercard::MAX_BALANCE_ERROR
-      expect{ oystercard.top_up 91 }.to raise_error error
+      oystercard.top_up Oystercard::MAX_BALANCE
+      expect{ oystercard.top_up 1 }.to raise_error error
     end
 
   end
