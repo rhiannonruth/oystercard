@@ -1,15 +1,8 @@
 source "https://rubygems.org"
 
-ruby "2.1.5", :patchlevel => "273"
+ruby '2.2.3'
 
 group :development, :test do
 gem 'rspec'
 end
 
-group :optional: true do
-gem 'capybara'
-gem 'coveralls', require: false
-gem 'rubocop'
-gem 'reek'
-gem 'rake'
-end
