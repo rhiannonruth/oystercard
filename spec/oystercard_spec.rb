@@ -5,7 +5,8 @@ describe Oystercard do
 subject(:card) { described_class.new }
 let(:max_value) { Oystercard::MAX_VALUE }
 let(:min_value) { Oystercard::MIN_VALUE }
-let(:station) { double :station }
+let(:entry_station) { double :station }
+let(:exit_station) { double :station }
 
   describe '#balance' do
     it 'starts with a balance of 0' do
@@ -29,11 +30,11 @@ let(:station) { double :station }
     before(:each) { card.top_up(max_value) }
 
     it 'touch_in changes in_journey? status to true' do
-      card.touch_in(station)
+      card.touch_in(entry_station)
       expect(card).to be_in_journey
     end
     it 'touch_out changes in_journey? status to false' do
-      card.touch_out
+      card.touch_out(exit_station)
       expect(card).to_not be_in_journey
     end
   end
@@ -41,12 +42,12 @@ let(:station) { double :station }
   describe '#touch_in' do
 
     it 'raises an error when balance is less than minimum value' do
-      expect{ card.touch_in(station) }.to raise_error Oystercard::MIN_VALUE_ERROR
+      expect{ card.touch_in(entry_station) }.to raise_error Oystercard::MIN_VALUE_ERROR
     end
     it 'sets value of entry station' do
       card.top_up(max_value)
-      card.touch_in(station)
-      expect(card.entry_station).to eq station
+      card.touch_in(entry_station)
+      expect(card.entry_station).to eq entry_station
     end
   end
 
@@ -55,8 +56,22 @@ let(:station) { double :station }
     before(:each) { card.top_up(max_value) }
 
     it 'deducts balance when touching out' do
-      card.touch_in(station)
-      expect{ card.touch_out }.to change{ card.check_balance }.by(- min_value)
+      card.touch_in(entry_station)
+      expect{ card.touch_out(exit_station) }.to change{ card.check_balance }.by(- min_value)
+    end
+  end
+
+  describe '#journey_history' do
+
+    before(:each) { card.top_up(max_value) }
+
+    it 'is empty on initialize' do
+      expect(card.journey_history).to be_empty
+    end
+    it 'contains one journey after touch_in then touch_out' do
+      card.touch_in(entry_station)
+      card.touch_out(exit_station)
+      expect(card.journey_history).to eq([{entry_station => exit_station}])
     end
   end
 
