@@ -16,6 +16,10 @@ subject(:card) {described_class.new}
       card.top_up(20)
       expect(card.check_balance).to eq 20
     end
+    it 'raises error when topped up over the limit' do
+      card.top_up(Oystercard::MAX_LIMIT)
+      expect {card.top_up(1)}.to raise_error Oystercard::MAX_LIMIT_ERROR
+    end
   end
 
 end
