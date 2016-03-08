@@ -29,7 +29,8 @@ subject(:card) { described_class.new }
     end
   end
 
-  context 'making a journey' do
+  describe '#in_journey' do
+    before(:each) { card.top_up(Oystercard::MAX_LIMIT) }
 
     it 'touch_in changes in_journey? status to true' do
       card.touch_in
@@ -39,6 +40,13 @@ subject(:card) { described_class.new }
     it 'touch_out changes in_journey? status to false' do
       card.touch_out
       expect(card).to_not be_in_journey
+    end
+  end
+
+  describe '#touch_in' do
+
+    it 'raises an error when balance is less than minimum value' do
+      expect{ card.touch_in }.to raise_error Oystercard::MIN_VALUE_ERROR
     end
   end
 
