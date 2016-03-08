@@ -25,29 +25,29 @@ let(:exit_station) { double :station }
     end
   end
 
-  describe '#in_journey' do
-
-    before(:each) { card.top_up(max_value) }
-
-    it 'touch_in changes in_journey? status to true' do
-      card.touch_in(entry_station)
-      expect(card).to be_in_journey
-    end
-    it 'touch_out changes in_journey? status to false' do
-      card.touch_out(exit_station)
-      expect(card).to_not be_in_journey
-    end
-  end
+  # describe '#in_journey' do
+  #
+  #   before(:each) { card.top_up(max_value) }
+  #
+  #   it 'touch_in changes in_journey? status to true' do
+  #     card.touch_in(entry_station)
+  #     expect(card).to be_in_journey
+  #   end
+  #   it 'touch_out changes in_journey? status to false' do
+  #     card.touch_out(exit_station)
+  #     expect(card).to_not be_in_journey
+  #   end
+  # end
 
   describe '#touch_in' do
 
     it 'raises an error when balance is less than minimum value' do
       expect{ card.touch_in(entry_station) }.to raise_error Oystercard::MIN_VALUE_ERROR
     end
-    it 'sets value of entry station' do
+    it 'creates an instance of a journey' do
       card.top_up(max_value)
       card.touch_in(entry_station)
-      expect(card.entry_station).to eq entry_station
+      expect(card.incomplete_journey).to_not be nil
     end
   end
 
@@ -59,6 +59,12 @@ let(:exit_station) { double :station }
       card.touch_in(entry_station)
       expect{ card.touch_out(exit_station) }.to change{ card.check_balance }.by(- min_value)
     end
+    it 'resets incomplete_journey back to nil' do
+      card.touch_in(entry_station)
+      card.touch_out(exit_station)
+      expect(card.incomplete_journey).to be_nil
+    end
+
   end
 
   describe '#journey_history' do

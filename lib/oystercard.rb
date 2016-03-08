@@ -1,7 +1,7 @@
 class Oystercard
 
-  attr_reader :balance, :entry_station, :journey_history
-  #attr_accessor :journey_history
+  attr_reader :balance, :journey_history
+  attr_accessor :incomplete_journey
 
   DEFAULT_BALANCE = 0
   MAX_VALUE = 90
@@ -11,8 +11,8 @@ class Oystercard
 
   def initialize(balance=DEFAULT_BALANCE)
     @balance = DEFAULT_BALANCE
-    @entry_station = nil
     @journey_history = []
+    @incomplete_journey = nil
   end
 
   def check_balance
@@ -24,19 +24,20 @@ class Oystercard
     @balance += value
   end
 
-  def in_journey?
-    @entry_station != nil
-  end
+  # def in_journey?
+  #   @entry_station != nil
+  # end
 
   def touch_in(station)
-    raise "balance is less than 1" if balance < MIN_VALUE
-    @entry_station = station
+    raise MIN_VALUE_ERROR if balance < MIN_VALUE
+    @incomplete_journey = Journey.new(station)
   end
 
   def touch_out(station)
-    deduct(MIN_VALUE)
-    @journey_history << { entry_station => station }
-    @entry_station = nil
+    @incomplete_journey.exit_station = station
+    @journey_history << { @incomplete_journey.entry_station => @incomplete_journey.exit_station }
+    deduct(incomplete_journey.fare)
+    @incomplete_journey = nil
   end
 
     private
