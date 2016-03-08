@@ -5,6 +5,7 @@ describe Oystercard do
 subject(:card) { described_class.new }
 let(:max_value) { Oystercard::MAX_VALUE }
 let(:min_value) { Oystercard::MIN_VALUE }
+let(:station) { double :station }
 
   describe '#balance' do
     it 'starts with a balance of 0' do
@@ -28,7 +29,7 @@ let(:min_value) { Oystercard::MIN_VALUE }
     before(:each) { card.top_up(max_value) }
 
     it 'touch_in changes in_journey? status to true' do
-      card.touch_in
+      card.touch_in(station)
       expect(card).to be_in_journey
     end
     it 'touch_out changes in_journey? status to false' do
@@ -40,7 +41,12 @@ let(:min_value) { Oystercard::MIN_VALUE }
   describe '#touch_in' do
 
     it 'raises an error when balance is less than minimum value' do
-      expect{ card.touch_in }.to raise_error Oystercard::MIN_VALUE_ERROR
+      expect{ card.touch_in(station) }.to raise_error Oystercard::MIN_VALUE_ERROR
+    end
+    it 'sets value of entry station' do
+      card.top_up(max_value)
+      card.touch_in(station)
+      expect(card.entry_station).to eq station
     end
   end
 
@@ -49,7 +55,7 @@ let(:min_value) { Oystercard::MIN_VALUE }
     before(:each) { card.top_up(max_value) }
 
     it 'deducts balance when touching out' do
-      card.touch_in
+      card.touch_in(station)
       expect{ card.touch_out }.to change{ card.check_balance }.by(- min_value)
     end
   end
