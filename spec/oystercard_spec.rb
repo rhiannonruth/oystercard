@@ -13,14 +13,8 @@ describe Oystercard do
     end
 
     it "should raise an error if maximum balance exceeded" do
-      amount = described_class::MAXIMUM_BALANCE + 1
+      amount = Oystercard::MAXIMUM_BALANCE + 1
       expect{oystercard.top_up(amount)}.to raise_error("Maximum balance exceeded")
-    end
-  end
-
-  describe "#deduct" do
-    it "should deduct the specified amount from balance" do
-      expect{oystercard.deduct(10)}.to change{oystercard.balance}.by(-10)
     end
   end
 
@@ -42,10 +36,16 @@ describe Oystercard do
   end
 
   describe "#touch_out" do
-    it "should change in_journey status to false" do
+    before do
       oystercard.top_up(10)
       oystercard.touch_in
+    end
+    it "should change in_journey status to false" do
       expect{oystercard.touch_out}.to change{oystercard.in_journey?}.to(false)
+    end
+
+    it "should deduct minimum fare from balance" do
+      expect{oystercard.touch_out}.to change{oystercard.balance}.by(-Oystercard::MINIMUM_FARE)
     end
   end
 
