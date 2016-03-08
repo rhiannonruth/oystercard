@@ -5,14 +5,15 @@ describe Oystercard do
   default_value = Oystercard::DEFAULT_BALANCE
   maximum = Oystercard::MAXIMUM
 
-
   subject(:card) { described_class.new }
 
-
-
   describe '#initialize' do
-    it 'is created with a balance' do
+    it 'initializes with a balance' do
       expect(card.balance).to eq default_value
+    end
+
+    it 'is created with in_journey attribute: false' do
+      expect(card.touched_in).to eq false
     end
   end
 
@@ -46,6 +47,27 @@ describe Oystercard do
       expect(card.balance).to eq(current_balance - amount)
     end
 
+  end
+
+  describe '#in_journey?' do
+    it 'reveals whether the card is in journey (touched in)' do
+      expect(card.in_journey?).to eq false
+    end
+  end
+
+  describe '#touch_in' do
+    it 'changes touched_in to true' do
+      card.touch_in
+      expect(card.in_journey?).to eq true
+    end
+  end
+
+  describe '#touch_out' do
+    it 'changes touched_in to false' do
+      card.touch_in
+      card.touch_out
+      expect(card.in_journey?).to eq false
+    end
   end
 
 end
