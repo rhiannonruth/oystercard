@@ -4,6 +4,7 @@ describe Oystercard do
 
   default_value = Oystercard::DEFAULT_BALANCE
   maximum = Oystercard::MAXIMUM
+  minimum = Oystercard::MINIMUM
 
   subject(:card) { described_class.new }
 
@@ -60,6 +61,13 @@ describe Oystercard do
       card.touch_in
       expect(card.in_journey?).to eq true
     end
+
+    it 'raises an error when balance is below minimum' do
+      card.deduct((card.balance - minimum) +1 )
+      expect{card.touch_in}.to raise_error 'insufficient funds.'
+    end
+
+
   end
 
   describe '#touch_out' do
