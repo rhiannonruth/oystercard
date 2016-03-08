@@ -4,6 +4,7 @@ describe Oystercard do
   subject(:oystercard) {described_class.new}
   let(:station) {double :station}
   let(:exit_station) {double :exit_station}
+  let(:journey) {{:entry_station=>station,:exit_station=>exit_station}}
 
   describe "initialization" do
     it 'is initialized with a balance of 0' do
@@ -69,20 +70,9 @@ describe Oystercard do
 
     it "should append journey to journey_history" do
       oystercard.touch_out(exit_station)
-      expect(oystercard.journeys).to eq [{station=>exit_station}]
+      expect(oystercard.journeys).to eq [journey]
     end
   end
-
-  # describe "#journey" do
-  #   it "should make a key-value pair of entry & exit stations" do
-  #     expect(oystercard.journey(station,exit_station)).to eq exit_station
-  #   end
-  #
-  #   it "should append to journey_history" do
-  #     oystercard.journey(station, exit_station)
-  #     expect(oystercard.journey_history[station]).to eq exit_station
-  #   end
-  # end
 
 
 end
