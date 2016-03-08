@@ -5,6 +5,7 @@ describe Oystercard do
   default_value = Oystercard::DEFAULT_BALANCE
   maximum = Oystercard::MAXIMUM
   minimum = Oystercard::MINIMUM
+  minimum_fare = Oystercard::MINIMUM_FARE
 
   subject(:card) { described_class.new }
 
@@ -19,10 +20,6 @@ describe Oystercard do
   end
 
   describe '#top_up' do
-    it 'responds to a call to top up with an argument' do
-      expect(card).to respond_to(:top_up).with(1).argument
-    end
-
     it 'adds amount to existing balance' do
       amount = Random.rand(1..20)
       card.top_up(amount)
@@ -34,20 +31,6 @@ describe Oystercard do
       message = "cannot exceed maximum amount £#{maximum}"
       expect{card.top_up(amount)}.to raise_error message
     end
-  end
-
-  describe '#deduct' do
-    it 'responds to a call to deduct with an argument' do
-      expect(card).to respond_to(:deduct).with(1).argument
-    end
-
-    it 'reduces current balance by defined amount' do
-      current_balance = card.balance
-      amount = Random.rand(2..7)
-      card.deduct(amount)
-      expect(card.balance).to eq(current_balance - amount)
-    end
-
   end
 
   describe '#in_journey?' do
@@ -63,10 +46,9 @@ describe Oystercard do
     end
 
     it 'raises an error when balance is below minimum' do
-      card.deduct((card.balance - minimum) +1 )
+      card = described_class.new(0)
       expect{card.touch_in}.to raise_error 'insufficient funds.'
     end
-
 
   end
 
@@ -75,6 +57,10 @@ describe Oystercard do
       card.touch_in
       card.touch_out
       expect(card.in_journey?).to eq false
+    end
+
+    it 'deducts minimum fare from the balance' do
+      expect{card.touch_out}.to change{card.balance}.by(-minimum_fare)
     end
   end
 
