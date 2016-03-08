@@ -3,10 +3,15 @@ require 'oystercard'
 describe Oystercard do
   subject(:oystercard) {described_class.new}
   let(:station) {double :station}
+  let(:exit_station) {double :exit_station}
 
   describe "initialization" do
     it 'is initialized with a balance of 0' do
       expect(oystercard.balance).to eq 0
+    end
+
+    it "has an empty journey history" do
+      expect(oystercard.journeys).to eq []
     end
   end
 
@@ -51,17 +56,33 @@ describe Oystercard do
     end
 
     it "should change in_journey status to false" do
-      expect{oystercard.touch_out}.to change{oystercard.in_journey?}.to(false)
+      expect{oystercard.touch_out(exit_station)}.to change{oystercard.in_journey?}.to(false)
     end
 
     it "should deduct minimum fare from balance" do
-      expect{oystercard.touch_out}.to change{oystercard.balance}.by(-Oystercard::MINIMUM_FARE)
+      expect{oystercard.touch_out(exit_station)}.to change{oystercard.balance}.by(-Oystercard::MINIMUM_FARE)
     end
 
     it "should clear the entry station" do
-      expect{oystercard.touch_out}.to change{oystercard.entry_station}.to nil
+      expect{oystercard.touch_out(exit_station)}.to change{oystercard.entry_station}.to nil
+    end
+
+    it "should append journey to journey_history" do
+      oystercard.touch_out(exit_station)
+      expect(oystercard.journeys).to eq [{station=>exit_station}]
     end
   end
+
+  # describe "#journey" do
+  #   it "should make a key-value pair of entry & exit stations" do
+  #     expect(oystercard.journey(station,exit_station)).to eq exit_station
+  #   end
+  #
+  #   it "should append to journey_history" do
+  #     oystercard.journey(station, exit_station)
+  #     expect(oystercard.journey_history[station]).to eq exit_station
+  #   end
+  # end
 
 
 end
