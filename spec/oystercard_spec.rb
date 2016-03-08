@@ -3,6 +3,7 @@ require 'oystercard'
 describe Oystercard do
 
   default_value = Oystercard::DEFAULT_BALANCE
+  maximum = Oystercard::MAXIMUM
 
   subject(:card) { described_class.new }
 
@@ -23,6 +24,10 @@ describe Oystercard do
       expect(card.balance).to eq(default_value + amount)
     end
 
+    it 'raise an error' do
+      amount = Random.rand((90 - default_value)..100)
+      message = "cannot exceed maximum amount £#{maximum}"
+      expect{card.top_up(amount)}.to raise_error message
+    end
   end
-
 end
