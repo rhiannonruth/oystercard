@@ -1,18 +1,20 @@
 class Oystercard
 
-DEFAULT_BALANCE = 0
+  attr_reader :balance
 
-def initialize(balance=DEFAULT_BALANCE)
-  @balance = DEFAULT_BALANCE
-end
+  DEFAULT_BALANCE = 0
 
-def check_balance
-  @balance
-end
+  def initialize(balance=DEFAULT_BALANCE)
+    @balance = DEFAULT_BALANCE
+  end
 
-def top_up(value)
-  @balance += value
-end
+  def check_balance
+    @balance
+  end
+
+  def top_up(value)
+    @balance += value
+  end
 
 
 
