@@ -6,6 +6,7 @@ describe Oystercard do
     expect(oystercard.balance).to eq 0
   end
 
+
   describe "#top_up" do
     it "should top up card by specified amount" do
       expect{oystercard.top_up(10)}.to change{oystercard.balance}.by(10)
@@ -31,12 +32,18 @@ describe Oystercard do
 
   describe "#touch_in" do
     it "should change in_journey status to true" do
+      oystercard.top_up(10)
       expect{oystercard.touch_in}.to change{oystercard.in_journey?}.to(true)
+    end
+
+    it "should raise error when under minimum balance" do
+      expect{oystercard.touch_in}.to raise_error "Not enough funds"
     end
   end
 
   describe "#touch_out" do
     it "should change in_journey status to false" do
+      oystercard.top_up(10)
       oystercard.touch_in
       expect{oystercard.touch_out}.to change{oystercard.in_journey?}.to(false)
     end
