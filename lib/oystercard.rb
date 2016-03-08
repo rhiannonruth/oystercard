@@ -29,23 +29,32 @@ class Oystercard
 
   def touch_in(station)
     deduct(incomplete_journey.fare) if @incomplete_journey != nil
+    add_to_journey_history
     #DOES NOT ADD INCOMPLETE JOURNEY TO HISTORY - SHOULD IT BE?
-    @incomplete_journey = nil
+    reset_incomplete_journey
     raise MIN_VALUE_ERROR if balance < MIN_VALUE
     @incomplete_journey = Journey.new(station)
   end
 
   def touch_out(station)
     @incomplete_journey.exit_station = station
-    @journey_history << { @incomplete_journey.entry_station => @incomplete_journey.exit_station }
+    add_to_journey_history
     deduct(incomplete_journey.fare)
-    @incomplete_journey = nil
+    reset_incomplete_journey
   end
 
     private
 
     def deduct(value)
       @balance -= value
+    end
+
+    def add_to_journey_history
+      @journey_history << { @incomplete_journey.entry_station => @incomplete_journey.exit_station } if @incomplete_journey != nil
+    end
+
+    def reset_incomplete_journey
+      @incomplete_journey = nil
     end
 
 end
