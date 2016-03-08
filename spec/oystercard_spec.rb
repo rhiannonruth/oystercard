@@ -8,9 +8,15 @@ let(:min_value) { Oystercard::MIN_VALUE }
 let(:entry_station) { double :station }
 let(:exit_station) { double :station }
 
-  describe '#balance' do
+  describe '#initialize' do
     it 'starts with a balance of 0' do
       expect(card.check_balance).to eq 0
+    end
+    it 'journey_history is empty' do
+      expect(card.journey_history).to be_empty
+    end
+    it 'incomplete_journey is nil' do
+      expect(card.incomplete_journey).to be_nil
     end
   end
 
@@ -25,20 +31,6 @@ let(:exit_station) { double :station }
     end
   end
 
-  # describe '#in_journey' do
-  #
-  #   before(:each) { card.top_up(max_value) }
-  #
-  #   it 'touch_in changes in_journey? status to true' do
-  #     card.touch_in(entry_station)
-  #     expect(card).to be_in_journey
-  #   end
-  #   it 'touch_out changes in_journey? status to false' do
-  #     card.touch_out(exit_station)
-  #     expect(card).to_not be_in_journey
-  #   end
-  # end
-
   describe '#touch_in' do
 
     it 'raises an error when balance is less than minimum value' do
@@ -49,36 +41,34 @@ let(:exit_station) { double :station }
       card.touch_in(entry_station)
       expect(card.incomplete_journey).to_not be nil
     end
+    it 'deducts balance by fare if there is an incomplete journey' do
+      card.top_up(max_value)
+      card.touch_in(entry_station)
+      allow(card.incomplete_journey).to receive(:fare) {5}
+      expect{ card.touch_in(entry_station) }.to change{ card.check_balance }.by(- 5)
+    end
   end
 
   describe '#touch_out' do
 
     before(:each) { card.top_up(max_value) }
 
-    it 'deducts balance when touching out' do
+    it 'deducts balance by fare when touching out' do
       card.touch_in(entry_station)
-      expect{ card.touch_out(exit_station) }.to change{ card.check_balance }.by(- min_value)
+      allow(card.incomplete_journey).to receive(:fare) {5}
+      expect{ card.touch_out(exit_station) }.to change{ card.check_balance }.by(- 5)
     end
     it 'resets incomplete_journey back to nil' do
       card.touch_in(entry_station)
       card.touch_out(exit_station)
       expect(card.incomplete_journey).to be_nil
     end
-
-  end
-
-  describe '#journey_history' do
-
-    before(:each) { card.top_up(max_value) }
-
-    it 'is empty on initialize' do
-      expect(card.journey_history).to be_empty
-    end
     it 'contains one journey after touch_in then touch_out' do
       card.touch_in(entry_station)
       card.touch_out(exit_station)
       expect(card.journey_history).to eq([{entry_station => exit_station}])
     end
+
   end
 
 end

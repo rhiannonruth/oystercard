@@ -1,3 +1,6 @@
+require_relative 'station'
+require_relative 'journey'
+
 class Oystercard
 
   attr_reader :balance, :journey_history
@@ -24,11 +27,10 @@ class Oystercard
     @balance += value
   end
 
-  # def in_journey?
-  #   @entry_station != nil
-  # end
-
   def touch_in(station)
+    deduct(incomplete_journey.fare) if @incomplete_journey != nil
+    #DOES NOT ADD INCOMPLETE JOURNEY TO HISTORY - SHOULD IT BE?
+    @incomplete_journey = nil
     raise MIN_VALUE_ERROR if balance < MIN_VALUE
     @incomplete_journey = Journey.new(station)
   end
