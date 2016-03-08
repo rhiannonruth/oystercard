@@ -1,33 +1,37 @@
 require 'journey'
 
 describe Journey do
-  subject(:journey) {described_class.new}
+  subject(:journey) { described_class.new }
+  let(:station) { double :station }
 
+  it "is incomplete when initialized" do
+    expect(subject).not_to be_complete
+  end
 
-
-  it {is_expected.to respond_to :make_journey}
-  describe "#make_journey" do
-    it "should pass entry and exit stations into the hash" do
-      subject.start_journey(:bond_st)
-      subject.complete_journey(:oxford_st)
-      expect(subject.make_journey).to eq ({entry_station: :bond_st, exit_station: :oxford_st})
-    end
+  it "has a penalty fare when incomplete" do
+    expect(subject.fare).to eq described_class::PENALTY_FARE
   end
 
   describe "#start_journey" do
-    it "should update the entry station" do
-      subject.start_journey(:bond_st)
-      expect(subject.entry_station).to eq :bond_st
+    it "records an entry station when touched in" do
+      subject.start(station)
+      expect(subject.entry_station).to eq station
     end
   end
 
   describe "#complete_journey" do
-    it "should update the exit station" do
-      subject.complete_journey(:oxford_st)
-      expect(subject.exit_station).to eq :oxford_st
+    let(:destination) { double :destination }
+    before do
+      subject.complete(destination)
+    end
+
+    it "records an exit station when touched out" do
+      expect(subject.exit_station).to eq destination
+    end
+
+    it "changes journey status to complete" do
+      expect(subject).to be_complete
     end
   end
 
-  it {is_expected.to respond_to :entry_station}
-  it {is_expected.to respond_to :exit_station}
 end
