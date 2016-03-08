@@ -29,4 +29,17 @@ subject(:card) { described_class.new }
     end
   end
 
+  context 'making a journey' do
+
+    it 'touch_in changes in_journey? status to true' do
+      card.touch_in
+      expect(card).to be_in_journey
+    end
+
+    it 'touch_out changes in_journey? status to false' do
+      card.touch_out
+      expect(card).to_not be_in_journey
+    end
+  end
+
 end
