@@ -24,9 +24,10 @@ class Oystercard
   end
 
   def touch_out(station)
-    deduct(MINIMUM_FARE)
     @journey.complete(station)
+    deduct(@journey.fare)
     log
+    @journey = Journey.new
   end
 
   private
@@ -36,8 +37,7 @@ class Oystercard
   end
 
   def log
-    @journeys << {:entry_station => @journey.entry_station, :exit_station => @journey.exit_station}
-    @journey = Journey.new
+    @journeys << {entry_station: @journey.entry_station, exit_station: @journey.exit_station}
   end
 
 end
