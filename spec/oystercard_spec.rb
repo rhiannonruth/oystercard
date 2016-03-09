@@ -1,18 +1,14 @@
 require 'oystercard'
 
 describe Oystercard do
-  let(:journey) { double :journey, complete: nil, fare: 1}
-  subject(:oystercard) { described_class.new(journey) }
+  #let(:journey) { double :journey, complete: nil, fare: 1}
+  subject(:oystercard) { described_class.new }
   let(:station) { double :station }
   let(:exit_station) { double :station }
 
   describe "initialization" do
     it 'is initialized with a balance of 0' do
       expect(subject.balance).to eq 0
-    end
-
-    it "has an empty journey history" do
-      expect(subject.journey_history).to eq []
     end
   end
 
