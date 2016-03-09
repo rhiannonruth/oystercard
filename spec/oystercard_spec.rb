@@ -9,6 +9,7 @@ describe Oystercard do
 
   subject(:card) { described_class.new }
   let (:entry_station)  { double :station }
+  let (:exit_station)   { double :station }
 
   describe '#initialize' do
     it 'initializes with a balance' do
@@ -21,6 +22,10 @@ describe Oystercard do
 
     it 'is initialized with an entry station (nil)' do
       expect(card.entry_station).to eq nil
+    end
+
+    it 'is initialized with an empty journey history' do
+      expect(card.journeys).to be_an(Array)
     end
 
   end
@@ -38,8 +43,7 @@ describe Oystercard do
     end
 
     it 'raise an error' do
-      prev_balance = card.balance
-      amount = rand((90 - prev_balance)..100)
+      amount = maximum+1
       message = "cannot exceed maximum amount £#{maximum}"
       expect{card.top_up(amount)}.to raise_error message
     end
@@ -67,11 +71,11 @@ describe Oystercard do
       expect{card.touch_in(entry_station)}.to raise_error 'insufficient funds.'
     end
 
-
     it 'remembers station of entry' do
       card.touch_in(entry_station)
       expect(card.entry_station).to eq(entry_station)
     end
+
 
   end
 
@@ -79,21 +83,31 @@ describe Oystercard do
 
     before do
       card.top_up(Oystercard::MINIMUM)
+      card.touch_in(entry_station)
     end
 
     it 'changes touched_in to false' do
-      card.touch_in(entry_station)
-      card.touch_out
+      card.touch_out(exit_station)
       expect(card.in_journey?).to eq false
     end
 
-    it {expect{card.touch_out}.to change{card.balance}.by(-minimum_fare)}
+    it {expect{card.touch_out(exit_station)}.to change{card.balance}.by(-minimum_fare)}
 
     it 'resets entry_station to nil' do
-      card.touch_in('Bank')
-      card.touch_out
+      card.touch_out(exit_station)
       expect(card.entry_station).to eq nil
     end
+
+    it 'pushes entry/exit hash into journeys array' do
+      card.touch_out(exit_station)
+      test_journey = {}
+      test_journey[:entry_station] = entry_station
+      test_journey[:exit_station] = exit_station
+      expect(card.journeys).to include(test_journey)
+    end
+
   end
+
+
 
 end
