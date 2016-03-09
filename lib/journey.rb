@@ -40,8 +40,8 @@ class Journey
 
   private
 
-  def penalty?
-    (!entry_station || !exit_station)
-  end
+    def penalty?
+      (!entry_station || !exit_station)
+    end
 
 end
