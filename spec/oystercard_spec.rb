@@ -8,7 +8,7 @@ describe Oystercard do
   minimum_fare = Oystercard::MINIMUM_FARE
 
   subject(:card) { described_class.new }
-  let (:origin)  { double :station }
+  let (:entry_station)  { double :station }
 
   describe '#initialize' do
     it 'initializes with a balance' do
@@ -20,7 +20,7 @@ describe Oystercard do
     end
 
     it 'is initialized with an entry station (nil)' do
-      expect(card.origin).to eq nil
+      expect(card.entry_station).to eq nil
     end
 
   end
@@ -47,29 +47,26 @@ describe Oystercard do
 
   describe '#touch_in' do
     it 'changes touched_in to true' do
-      card.touch_in(origin)
+      card.touch_in(entry_station)
       expect(card.in_journey?).to eq true
     end
 
     it 'raises an error when balance is below minimum' do
       card = described_class.new(0)
-      expect{card.touch_in(origin)}.to raise_error 'insufficient funds.'
+      expect{card.touch_in(entry_station)}.to raise_error 'insufficient funds.'
     end
 
-    it 'is called with an argument(origin)' do
-      expect(card).to respond_to(:touch_in).with(1).argument
-    end
 
     it 'remembers station of entry' do
-      card.touch_in(origin)
-      expect(card.origin).to eq(origin)
+      card.touch_in(entry_station)
+      expect(card.entry_station).to eq(entry_station)
     end
 
   end
 
   describe '#touch_out' do
     it 'changes touched_in to false' do
-      card.touch_in(origin)
+      card.touch_in(entry_station)
       card.touch_out
       expect(card.in_journey?).to eq false
     end
@@ -78,10 +75,10 @@ describe Oystercard do
       expect{card.touch_out}.to change{card.balance}.by(-minimum_fare)
     end
 
-    it 'resets origin to nil' do
+    it 'resets entry_station to nil' do
       card.touch_in('Bank')
       card.touch_out
-      expect(card.origin).to eq nil
+      expect(card.entry_station).to eq nil
     end
 
   end
