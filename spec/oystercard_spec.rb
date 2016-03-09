@@ -1,7 +1,6 @@
 require 'oystercard'
 
 describe Oystercard do
-  #let(:journey) { double :journey, complete: nil, fare: 1}
   subject(:oystercard) { described_class.new }
   let(:station) { double :station }
   let(:exit_station) { double :station }
@@ -33,17 +32,11 @@ describe Oystercard do
   describe "#touch_out" do
     before do
       subject.top_up(10)
-      allow(journey).to receive_messages(entry_station: nil, start: nil)
       subject.touch_in(station)
     end
 
     it "should deduct minimum fare from balance" do
       expect{ subject.touch_out(exit_station) }.to change{ subject.balance }.by(-Oystercard::MINIMUM_BALANCE)
-    end
-
-    it "should append journey to journey_history" do
-      subject.touch_out(exit_station)
-      expect(subject.journey_history).to eq [journey]
     end
   end
 

@@ -2,8 +2,11 @@ require_relative "journey"
 
 class JourneyLog
 
-  def initialize(current_journey=Journey.new)
-    @current_journey = current_journey
+  attr_reader :current_journey
+
+  def initialize(journey = Journey)
+    @journey = journey
+    @current_journey = journey.new
     @journey_history = []
   end
 
@@ -13,10 +16,15 @@ class JourneyLog
 
   def complete_journey(station)
     @current_journey.complete(station)
+    log
   end
 
   def journey_history
     @journey_history.dup
+  end
+
+  def reset_journey
+    @current_journey = @journey.new
   end
 
   private

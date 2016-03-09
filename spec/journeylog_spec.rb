@@ -2,9 +2,10 @@ require "journeylog"
 
 describe JourneyLog do
 
+  let(:journey_class) { double :journey_class, new: journey }
+  subject(:journeylog) { described_class.new(journey_class) }
+  let(:station) { double :station }
   let(:journey) { double :journey }
-  subject(:journeylog) { described_class.new(journey) }
-  let(:station) {double :station }
 
   describe "initialization" do
     it "should have an empty journey history" do
