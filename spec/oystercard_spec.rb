@@ -2,7 +2,7 @@ require 'oystercard'
 
 describe Oystercard do
 
-  default_value = Oystercard::DEFAULT_BALANCE
+  # default_value = Oystercard::DEFAULT_BALANCE
   maximum = Oystercard::MAXIMUM
   minimum = Oystercard::MINIMUM
   minimum_fare = Oystercard::MINIMUM_FARE
@@ -12,7 +12,7 @@ describe Oystercard do
 
   describe '#initialize' do
     it 'initializes with a balance' do
-      expect(card.balance).to eq default_value
+      expect(card.balance).to be_integer
     end
 
     it 'is created with in_journey attribute: false' do
@@ -26,14 +26,20 @@ describe Oystercard do
   end
 
   describe '#top_up' do
-    it 'adds amount to existing balance' do
-      amount = Random.rand(1..20)
-      card.top_up(amount)
-      expect(card.balance).to eq(default_value + amount)
+    # it 'adds amount to existing balance' do
+    #   prev_balance = card.balance
+    #   amount = rand(1..20)
+    #   card.top_up(amount)
+    #   expect(card.balance).to eq(prev_balance + amount)
+    # end
+    it "adds amount to existing balance 2.0" do
+      amount = rand(1..20)
+      expect{card.top_up(amount)}.to change{card.balance}.by (amount)
     end
 
     it 'raise an error' do
-      amount = Random.rand((90 - default_value)..100)
+      prev_balance = card.balance
+      amount = rand((90 - prev_balance)..100)
       message = "cannot exceed maximum amount £#{maximum}"
       expect{card.top_up(amount)}.to raise_error message
     end
@@ -71,16 +77,13 @@ describe Oystercard do
       expect(card.in_journey?).to eq false
     end
 
-    it 'deducts minimum fare from the balance' do
-      expect{card.touch_out}.to change{card.balance}.by(-minimum_fare)
-    end
+    it {expect{card.touch_out}.to change{card.balance}.by(-minimum_fare)}
 
     it 'resets entry_station to nil' do
       card.touch_in('Bank')
       card.touch_out
       expect(card.entry_station).to eq nil
     end
-
   end
 
 end

@@ -1,12 +1,11 @@
 class Oystercard
-  DEFAULT_BALANCE = 5
   MAXIMUM = 90
   MINIMUM = 1
   MINIMUM_FARE = 2
 
   attr_reader :balance, :entry_station
 
-  def initialize(balance=DEFAULT_BALANCE)
+  def initialize (balance = 0)
     @balance = balance
     @entry_station = nil
   end
