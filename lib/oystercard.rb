@@ -22,9 +22,8 @@ class Oystercard
 
   def touch_in(station)
     raise MINIMUM_BALANCE_ERROR if @balance < MINIMUM_BALANCE
+    no_touch_out if @journeylog.current_journey.entry_station != nil && @journeylog.current_journey.exit_station == nil
     @journeylog.start_journey(station)
-    # no_touch_out if @journey.entry_station != nil && @journey.exit_station == nil
-    # @journey.start(station)
   end
 
   def touch_out(station)
@@ -44,10 +43,8 @@ class Oystercard
     end
 
     def no_touch_out
-      # deduct(@journey.fare)
-      # @journey.no_touch_out
-      # log
-      # @journey = Journey.new
+      deduct(@journeylog.current_journey.fare)
+      @journeylog.no_touch_out
     end
 
 end

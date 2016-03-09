@@ -27,6 +27,13 @@ class JourneyLog
     @current_journey = @journey.new
   end
 
+  def no_touch_out
+    @current_journey.no_touch_out
+    log
+    reset_journey
+  end
+
+
   private
 
     def log

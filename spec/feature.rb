@@ -9,16 +9,10 @@ p oyster.journey_history
 p "**************************"
 
 oyster.touch_in("Euston")
-p oyster
-p oyster.journey_history
-p "**************************"
-
-oyster.touch_in("Aldgate")
-oyster.touch_out("Liverpool St")
+oyster.touch_in("March Arch")
 p oyster.balance
 p oyster.journey_history
-p "**************************"
 
-oyster.touch_out("Bond St")
+oyster.touch_out("Oxford Circus")
 p oyster.balance
 p oyster.journey_history
