@@ -4,9 +4,9 @@ class JourneyLog
 
   attr_reader :current_journey
 
-  def initialize(journey = Journey)
-    @journey = journey
-    @current_journey = journey.new
+  def initialize(journey_class = Journey)
+    @journey_class = journey_class
+    @current_journey = journey_class.new
     @journey_history = []
   end
 
@@ -24,7 +24,7 @@ class JourneyLog
   end
 
   def reset_journey
-    @current_journey = @journey.new
+    @current_journey = @journey_class.new
   end
 
   def no_touch_out
