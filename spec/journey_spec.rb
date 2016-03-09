@@ -42,6 +42,13 @@ describe Journey do
     end
   end
 
+  describe "#no_touch_in" do
+    it "sets entry station to \"Did not touch in\"" do
+      subject.complete(station)
+      expect(subject.entry_station).to eq "Did not touch in"
+    end
+  end
+
   describe "#no_touch_out" do
     it "sets exit station to \"Did not touch out\"" do
       subject.start(station)

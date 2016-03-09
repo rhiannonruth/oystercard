@@ -11,11 +11,12 @@ class Journey
   end
 
   def start(station)
-    no_touch_out
+    no_touch_out if entry_station != nil && exit_station == nil
     @entry_station = station
   end
 
   def complete(station)
+    no_touch_in if entry_station == nil
     @exit_station = station
     @complete = true
   end
@@ -29,8 +30,12 @@ class Journey
     MINIMUM_FARE
   end
 
+  def no_touch_in
+    @entry_station = "Did not touch in"
+  end
+
   def no_touch_out
-    @exit_station = "Did not touch out" if entry_station != nil && exit_station == nil
+    @exit_station = "Did not touch out"
   end
 
   private

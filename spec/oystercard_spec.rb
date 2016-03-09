@@ -47,4 +47,6 @@ describe Oystercard do
       expect(subject.journeys).to eq [journey]
     end
   end
+
+  
 end
