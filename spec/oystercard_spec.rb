@@ -52,6 +52,11 @@ describe Oystercard do
   end
 
   describe '#touch_in' do
+
+    before do
+      card.top_up(Oystercard::MINIMUM)
+    end
+
     it 'changes touched_in to true' do
       card.touch_in(entry_station)
       expect(card.in_journey?).to eq true
@@ -71,6 +76,11 @@ describe Oystercard do
   end
 
   describe '#touch_out' do
+
+    before do
+      card.top_up(Oystercard::MINIMUM)
+    end
+
     it 'changes touched_in to false' do
       card.touch_in(entry_station)
       card.touch_out
