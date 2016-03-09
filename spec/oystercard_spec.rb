@@ -39,7 +39,7 @@ describe Oystercard do
     end
 
     it "should deduct minimum fare from balance" do
-      expect{ subject.touch_out(exit_station) }.to change{ subject.balance }.by(-Oystercard::MINIMUM_FARE)
+      expect{ subject.touch_out(exit_station) }.to change{ subject.balance }.by(-Oystercard::MINIMUM_BALANCE)
     end
 
     it "should append journey to journey_history" do

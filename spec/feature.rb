@@ -9,7 +9,7 @@ p oyster.journeys
 p "**************************"
 
 oyster.touch_in("Euston")
-p oyster.balance
+p oyster
 p oyster.journeys # => Doesn't record journey or charge penalty fare when forget to touch out
 p "**************************"
 
@@ -22,3 +22,8 @@ p "**************************"
 oyster.touch_out("Bond St")
 p oyster.balance
 p oyster.journeys
+
+
+#no touch out
+oyster.touch_in("Euston")
+deduct fare(penalty) if no touch out

@@ -38,7 +38,15 @@ describe Journey do
     it "returns a fare upon touch-out" do
       subject.start(station)
       subject.complete(destination)
-      expect(subject.fare).to eq Oystercard::MINIMUM_FARE
+      expect(subject.fare).to eq described_class::MINIMUM_FARE
+    end
+  end
+
+  describe "#no_touch_out" do
+    it "sets exit station to \"Did not touch out\"" do
+      subject.start(station)
+      subject.start(destination)
+      expect(subject.exit_station).to eq "Did not touch out"
     end
   end
 
