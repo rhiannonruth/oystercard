@@ -12,22 +12,9 @@ describe Oystercard do
   let (:exit_station)   { double :station }
 
   describe '#initialize' do
-    it 'initializes with a balance' do
-      expect(card.balance).to be_integer
-    end
-
-    it 'is created with in_journey attribute: false' do
-      expect(card.in_journey?).to eq false
-    end
-
-    it 'is initialized with an entry station (nil)' do
-      expect(card.entry_station).to eq nil
-    end
-
-    it 'is initialized with an empty journey history' do
-      expect(card.journeys).to be_an(Array)
-    end
-
+    it {expect(card.balance).to be_integer}
+    it {expect(card.in_journey?).to eq false}
+    it {expect(card.journeys).to be_empty}
   end
 
   describe '#top_up' do
@@ -50,62 +37,44 @@ describe Oystercard do
   end
 
   describe '#in_journey?' do
-    it 'reveals whether the card is in journey (touched in)' do
-      expect(card.in_journey?).to eq false
-    end
+    it {expect(card.in_journey?).to eq false}
   end
 
   describe '#touch_in' do
-
     before do
       card.top_up(Oystercard::MINIMUM)
+      card.touch_in(entry_station)
     end
 
-    it 'changes touched_in to true' do
-      card.touch_in(entry_station)
-      expect(card.in_journey?).to eq true
-    end
+    it {expect(card.in_journey?).to eq true}
 
     it 'raises an error when balance is below minimum' do
       card = described_class.new(0)
       expect{card.touch_in(entry_station)}.to raise_error 'insufficient funds.'
     end
 
-    it 'remembers station of entry' do
-      card.touch_in(entry_station)
-      expect(card.entry_station).to eq(entry_station)
-    end
-
-
+    it {expect(card.entry_station).to eq(entry_station)}
   end
 
   describe '#touch_out' do
-
     before do
       card.top_up(Oystercard::MINIMUM)
       card.touch_in(entry_station)
+      card.touch_out(exit_station)
     end
 
-    it 'changes touched_in to false' do
-      card.touch_out(exit_station)
-      expect(card.in_journey?).to eq false
-    end
+    it {expect(card.in_journey?).to eq false}
 
     it {expect{card.touch_out(exit_station)}.to change{card.balance}.by(-minimum_fare)}
 
-    it 'resets entry_station to nil' do
-      card.touch_out(exit_station)
-      expect(card.entry_station).to eq nil
-    end
+    it {expect(card.entry_station).to eq nil}
 
     it 'pushes entry/exit hash into journeys array' do
-      card.touch_out(exit_station)
-      test_journey = {}
-      test_journey[:entry_station] = entry_station
-      test_journey[:exit_station] = exit_station
+      test_journey = {:entry_station => entry_station, :exit_station => exit_station }
       expect(card.journeys).to include(test_journey)
     end
 
+    it {expect(card.journeys.length).to eq 1}
   end
 
 

@@ -1,3 +1,5 @@
+require 'station'
+
 class Oystercard
   MAXIMUM = 90
   MINIMUM = 1
