@@ -3,8 +3,8 @@ require 'oystercard'
 describe Oystercard do
 
   # default_value = Oystercard::DEFAULT_BALANCE
-  maximum = Oystercard::MAXIMUM
-  minimum = Oystercard::MINIMUM
+  maximum_balance = Oystercard::MAXIMUM_BALANCE
+  minimum_balance = Oystercard::MINIMUM_BALANCE
   minimum_fare = Oystercard::MINIMUM_FARE
   penalty_fare = Oystercard::PENALTY_FARE
 
@@ -37,8 +37,8 @@ describe Oystercard do
     end
 
     it 'raise an error when trying to exceed balance maximum' do
-      amount = maximum+1
-      message = "cannot exceed maximum amount £#{maximum}"
+      amount = maximum_balance+1
+      message = Oystercard::MAXIMUM_BALANCE_ERROR
       expect{ card.top_up(amount) }.to raise_error message
     end
   end
@@ -46,7 +46,7 @@ describe Oystercard do
   describe '#touch_in' do
 
     before do
-      card.top_up(maximum)
+      card.top_up(maximum_balance)
       card.touch_in(entry_station)
     end
 
@@ -65,8 +65,8 @@ describe Oystercard do
     end
 
     it 'raises an error when balance is below minimum' do
-      card = described_class.new(0)
-      expect{ card.touch_in(entry_station) }.to raise_error 'insufficient funds.'
+      card = described_class.new
+      expect{ card.touch_in(entry_station) }.to raise_error Oystercard::MINIMUM_BALANCE_ERROR
     end
 
     it 'should set value of entry_station' do
@@ -78,13 +78,13 @@ describe Oystercard do
   describe '#touch_out' do
 
     before do
-      card.top_up(maximum)
+      card.top_up(maximum_balance)
       card.touch_in(entry_station)
     end
 
     it 'charges maximum fare when entry_station is unknown' do
-      card = described_class.new(0)
-      card.top_up(maximum)
+      card = described_class.new
+      card.top_up(maximum_balance)
       expect{ card.touch_out(exit_station) }.to change{ card.balance }.by(-penalty_fare)
     end
 
