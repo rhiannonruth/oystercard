@@ -24,15 +24,15 @@ class Oystercard
     !!@entry_station #!= nil
   end
 
-  def touch_in(entry_station)
-    deduct(PENALTY_FARE) if entry_station != nil
-    log_journey if entry_station != nil
+  def touch_in(station)
     raise 'insufficient funds.' if @balance < MINIMUM
-    @entry_station = entry_station
+    deduct(PENALTY_FARE) if entry_station != nil && exit_station == nil
+    log_journey if entry_station != nil
+    @entry_station = station
   end
 
-  def touch_out(exit_station)
-    @exit_station = exit_station
+  def touch_out(station)
+    @exit_station = station
     entry_station == nil ? deduct(PENALTY_FARE) : deduct(MINIMUM_FARE)
     log_journey
     @entry_station = nil
